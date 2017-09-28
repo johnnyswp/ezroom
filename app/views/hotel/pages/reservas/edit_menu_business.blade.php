@@ -9,13 +9,13 @@
 		<div class="col-lg-8 col-lg-offset-2">
 		<section class="panel">
 			<header class="panel-heading sm" data-color="theme-inverse">
-				<h2><strong> {{trans('main.Editar')}}</strong>  {{trans('main.business menu')}}</h2>
+				<h2><strong> {{trans('main.Editar')}}</strong>  {{trans('main.business menu reservables')}}</h2>
 				@if (Session::has('flash_message'))
                 <label class="color" style="color: white;background-color: rgba(0, 204, 23, 0.29);">{{ Session::get('flash_message') }}</label>
                 @endif
 			</header>
 			<div class="panel-body">
-				{{ Form::model($menu, ['files' => 'true', 'method' => 'PATCH', 'route' => ['hotel.business.menu.update', $menu->id]]) }}
+				{{ Form::model($item, ['files' => 'true', 'method' => 'PATCH', 'route' => ['hotel.business.reservables.update', $item->id]]) }}
 					
 					<div class="form-group offset">
 						<div>
@@ -25,10 +25,10 @@
 					</div>
 
 					<div class="form-group">
-                        <label class="control-label">{{trans('main.category')}}</label>
+                        <label class="control-label">{{trans('main.business')}}</label>
                         <div>
-                            {{ Form::select('category_id', $cats, null, ['class' => 'form-control selectpicker', 'data-size'=>'10', 'data-live-search'=>'true', 'autocomplete'=>'off']) }}
-                            {{ errors_for('category_id', $errors) }}
+                            {{ Form::select('business_id', $business, null, ['class' => 'form-control selectpicker', 'data-size'=>'10', 'data-live-search'=>'true', 'autocomplete'=>'off']) }}
+                            {{ errors_for('business_id', $errors) }}
                         </div>
                     </div>
 
@@ -40,13 +40,21 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="control-label">{{trans('main.time')}}</label>
+                        <div>
+                            {{ Form::text('time', null, ['class' => 'form-control', 'autocomplete'=>'off']) }}
+                            {{ errors_for('time', $errors) }}
+                        </div>
+                    </div>
+
 					<div class="form-group">
 						<label class="control-label">{{trans('main.select a Picture')}}</label><br>
 						<div>
 							<div class="fileinput fileinput-exists" data-provides="fileinput">
 								<input type="hidden" value="" name="">
 								<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px; line-height: 150px;">
-									<img src="{{$menu->picture}}" />
+									<img src="{{$item->picture}}" />
 								</div>
 							<div>
 								<span class="btn btn-default btn-file">
@@ -67,20 +75,20 @@
 					<?php $x=0; ?>
 					@foreach($langs as $lang_)
 					    <?php
-                            $menuLang = MenuLang::where('menu_id', $menu->id)->where('language_id', $lang_->language_id)->first();
+                            $itemLang = ReservablesLang::where('reservables_id', $item->id)->where('language_id', $lang_->language_id)->first();
 					    ?>
-					    @if($menuLang)
+					    @if($itemLang)
 					        @if($lang_->main==1)
 					        <label class="control-label">{{trans('main.Nombre en')}} {{$lang_->language->language}} ({{trans('main.lang')}})</label>
 					        <div class="form-group">
 					        	<div>
-					        		{{ Form::text($lang_->language->language, $menuLang->name, ['class' => 'form-control', 'placeholder'=>$lang_->language->language, 'autocomplete'=>'off', 'required'=>'required']) }}
+					        		{{ Form::text($lang_->language->language, $itemLang->name, ['class' => 'form-control', 'placeholder'=>$lang_->language->language, 'autocomplete'=>'off', 'required'=>'required']) }}
                                     {{ errors_for($lang_->language->language, $errors) }}
 					        	</div>
 					        </div>
 					        <div class="form-group">
 					        	<div>
-					        		{{ Form::textarea('descrption_'.$lang_->language->language, $menuLang->description, ['class' => 'form-control', 'style'=>'height: 75px;','placeholder'=>trans('main.descrpcion en').' '.$lang_->language->language, 'autocomplete'=>'off']) }}
+					        		{{ Form::textarea('descrption_'.$lang_->language->language, $itemLang->description, ['class' => 'form-control', 'style'=>'height: 75px;','placeholder'=>trans('main.descrpcion en').' '.$lang_->language->language, 'autocomplete'=>'off']) }}
                                     {{ errors_for('descrption_'.$lang_->language->language, $errors) }}
 					        	</div>
 					        </div>
@@ -92,13 +100,13 @@
 					            <label class="control-label">{{trans('main.Nombre en')}} {{$lang_->language->language}}</label>
 					            <div class="form-group">
 					            	<div>
-					            		{{ Form::text($lang_->language->language, $menuLang->name, ['class' => 'form-control', 'placeholder'=>$lang_->language->language, 'autocomplete'=>'off']) }}
+					            		{{ Form::text($lang_->language->language, $itemLang->name, ['class' => 'form-control', 'placeholder'=>$lang_->language->language, 'autocomplete'=>'off']) }}
                                         {{ errors_for($lang_->language->language, $errors) }}
 					            	</div>
 					            </div>
 					            <div class="form-group">
 					            	<div>
-					            		{{ Form::textarea('descrption_'.$lang_->language->language, $menuLang->description, ['class' => 'form-control', 'style'=>'height: 75px;','placeholder'=>trans('main.descrpcion en').' '.$lang_->language->language, 'autocomplete'=>'off']) }}
+					            		{{ Form::textarea('descrption_'.$lang_->language->language, $itemLang->description, ['class' => 'form-control', 'style'=>'height: 75px;','placeholder'=>trans('main.descrpcion en').' '.$lang_->language->language, 'autocomplete'=>'off']) }}
                                         {{ errors_for('descrption_'.$lang_->language->language, $errors) }}
 					            	</div>
 					            </div>
@@ -123,6 +131,80 @@
 					        </div>
 					    @endif
 					@endforeach
+
+					<div id="schedule"> 
+                        <label class="control-label">{{trans('main.Horario de disponibilidad')}}</label><br/>
+                        @foreach($weekdays as $weekday => $value)
+                        <?php
+                            $available = ReservablesAvailable::where('weekday', $weekday)->where('item_id', $item->id)->first();
+                        ?>
+                        @if($available)
+                        <div class="col-lg-12" style="border-bottom: 1px solid #E4E4E4; margin-bottom: 10px;">
+                            <label class="control-label col-lg-12">{{trans('main.'.$value)}}</label>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Desde')}} 1</label>
+					        	<div class="form-group">
+					        		{{ Form::text('desde_1_'.$value, $available->desde_1, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Desde').' 1', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('desde_1_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Hasta')}} 1</label>
+					        	<div class="form-group">
+					        		{{ Form::text('hasta_1_'.$value, $available->hasta_1, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Hasta').' 1', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('hasta_1_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Desde')}} 2</label>
+					        	<div class="form-group">
+					        		{{ Form::text('desde_2_'.$value, $available->desde_2, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Desde').' 2', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('desde_2_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Hasta')}} 2</label>
+					        	<div class="form-group">
+					        		{{ Form::text('hasta_2_'.$value, $available->hasta_2, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Hasta').' 2', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('hasta_2_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					    </div>
+					    @else
+					    <div class="col-lg-12" style="border-bottom: 1px solid #E4E4E4; margin-bottom: 10px;">
+                            <label class="control-label col-lg-12">{{$value}}</label>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Desde')}} 1</label>
+					        	<div class="form-group">
+					        		{{ Form::text('desde_1_'.$value, NULL, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Desde').' 1', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('desde_1_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Hasta')}} 1</label>
+					        	<div class="form-group">
+					        		{{ Form::text('hasta_1_'.$value, NULL, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Hasta').' 1', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('hasta_1_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Desde')}} 2</label>
+					        	<div class="form-group">
+					        		{{ Form::text('desde_2_'.$value, NULL, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Desde').' 2', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('desde_2_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					        <div class="col-lg-3">
+					            <label class="control-label">{{trans('main.Hasta')}} 2</label>
+					        	<div class="form-group">
+					        		{{ Form::text('hasta_2_'.$value, NULL, ['class' => 'form-control timepicker',     'placeholder'=>trans('main.Hasta').' 2', 'autocomplete'=>'off']) }}
+                                    {{ errors_for('hasta_2_'.$value, $errors) }}
+					        	</div>
+					        </div>
+					    </div>
+					    @endif
+                        @endforeach
+                    </div>
 
                     <div class="form-group offset">
 						<div>

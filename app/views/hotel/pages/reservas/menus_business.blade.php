@@ -109,7 +109,7 @@ $(function() {
         $.ajax({
             type: 'get',
             dataType: "json",
-            url: "{{url('hotel/business-menu-state')}}",
+            url: "{{url('hotel/reservation-state')}}",
             data: {id: $input.val()},
             success: function(data){
               if(data.success==true){
@@ -169,7 +169,7 @@ $(function() {
     	var order = $("#sortable").sortable('serialize');
     	$.ajax({
             type: 'GET',
-            url: "{{url('hotel/business-menu-position')}}",
+            url: "{{url('hotel/reservation-position')}}",
             data: order,
             success: function (data) {
                 new PNotify({

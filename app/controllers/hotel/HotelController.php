@@ -333,6 +333,21 @@ class HotelController extends \BaseController {
         ));
     }
 
+    public function anyReservationPosition()   
+    {
+        $array = Input::get('listItem');
+        foreach ($array as $position => $item)
+        {
+            $menu = Reservables::find($item);
+            $menu->reservablesOrder = $position;
+            $menu->save();  
+        }
+
+        return Response::json(array(
+              'success'  => true
+        ));
+    }
+
     public function anyPhonePosition()   
     {
         $array = Input::get('listItem');
@@ -820,6 +835,31 @@ class HotelController extends \BaseController {
         if(Request::ajax()){
             $hotel = Hotel::where('user_id', Sentry::getUser()->id)->first();
             $menu = Menu::where('id', Input::get('id'))->first();
+
+            if($menu->state==1){
+               $menu->state = 0;
+               $message = trans('main.your menu this disabled');
+            }else{
+
+                $menu->state = 1;
+                $message = trans('main.your item this enabled');
+            }
+
+            if($menu->save()){
+               return Response::json(array('success' => true, 'message'=>$message)); 
+            }else{
+              return Response::json(array(
+                    'success'  => false
+              ));
+            } 
+        }
+    }
+
+    public function anyReservationState()
+    {
+        if(Request::ajax()){
+            $hotel = Hotel::where('user_id', Sentry::getUser()->id)->first();
+            $menu = Reservables::where('id', Input::get('id'))->first();
 
             if($menu->state==1){
                $menu->state = 0;

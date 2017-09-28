@@ -39,6 +39,14 @@
                             {{ errors_for('price', $errors) }}
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="control-label">{{trans('main.time')}}</label>
+                        <div>
+                            {{ Form::text('time', null, ['class' => 'form-control', 'autocomplete'=>'off']) }}
+                            {{ errors_for('time', $errors) }}
+                        </div>
+                    </div>
                     
 					<div class="form-group">
 						<label class="control-label">{{trans('main.select a Picture')}}</label><br>
