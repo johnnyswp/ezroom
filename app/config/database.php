@@ -56,7 +56,7 @@ return array(
 			'host'      => 'localhost',
 		   	'database'  => 'ezroom',
 		   	'username'  => 'root',
-		   	'password'  => 'CLAROCLARO74',
+		   	'password'  => '',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

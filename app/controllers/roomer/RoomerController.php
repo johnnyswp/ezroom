@@ -638,6 +638,9 @@ class RoomerController extends \BaseController {
  					->orderBy('phones.order','ASC')
 				   	->get();
 		
+		
+
+
 		$today = Carbon::today();
 		$stay_token = Carbon::parse($stay->closing_date);		 
 	 
@@ -676,6 +679,11 @@ class RoomerController extends \BaseController {
 		 	
 		$template = $hotel->theme; 
 		
+		 $menus = Reservables::where('business_id', $service_id)->where('hotel_id', $stay->hotel_id)->orderBy('reservablesOrder', 'ASC')->get();
+
+
+
+
 		return View::make("roomers.themes.$template.item_reserva")
 			->withHotel($hotel)
 			 ->withExchange($exchange)
@@ -685,8 +693,149 @@ class RoomerController extends \BaseController {
 			->withStay($stay)
 			->withLang($lang)
 			->withBusiness($business)
-			->withRes($reservables)		
+			->withRes($reservables)	
+			->withMenus($menus)	
+			->withBusiness_id($service_id)	
 			->withPro($productos);			
+	}
+
+
+	public function getReservarGoDays()
+	{
+
+		
+		
+		 
+        
+		$service_id = Input::get('business_id');
+		 
+		$stay = Stay::find(Session::get('token_stay'));
+
+		#$lang_id = LanguageHotel::find(Session::get('lang_id'))->language_id;
+		$lang_id = Session::get('lang_id');
+		
+		$hotel = Hotel::find($stay->hotel_id);
+
+		$lang = Language::find($lang_id);
+		 
+		$categories = DB::table('category_menu')
+				   	->Join('names_category_menu', 'names_category_menu.category_menu_id', '=', 'category_menu.id')
+				   	->where('hotel_id','=',$stay->hotel_id)
+				   	->where('category_menu.state','=',1)
+				   	->where('language_id','=',$lang_id)
+				   	->select('category_menu.id as category_id',
+					   		'names_category_menu.name as category_name',
+					   		'category_menu.picture as category_picture')
+ 					->orderBy('category_menu.order','ASC')
+				   	->get();
+		$exchange = Exchanges::find($hotel->exchange_id)->symbol;
+		
+		$phones =  DB::table('phones')
+				   	->Join('name_phones', 'name_phones.phone_id', '=', 'phones.id')
+				   	->where('phones.hotel_id','=',$stay->hotel_id)
+				   	->where('name_phones.language_id','=',$lang_id)
+				   	->where('phones.state','=',1)
+				   	->select('name_phones.id as phones_id',
+					   		'name_phones.name as phones_name',
+					   		'phones.number as phones_number')
+ 					->orderBy('phones.order','ASC')
+				   	->get();
+		
+		
+
+
+		$today = Carbon::today();
+		$stay_token = Carbon::parse($stay->closing_date);		 
+	 
+		if($stay_token == $today){			
+			$max = "true";
+		}else{
+			$max = 1;	
+		}
+		 
+		 
+		$business = Business::find($service_id);
+	 	 
+	 	if($business->state!=1){$business='0'; }
+	 	
+	 	//dd($business);
+        $productos = DB::table('business')
+				   	->Join('cartegory', 'cartegory.business_id', '=', 'business.id')
+				   	->Join('menus', 'menus.category_id', '=', 'cartegory.id')
+				   	->where('menus.hotel_id',$stay->hotel_id)
+				   	->where('menus.state',1)
+				   	->where('cartegory.business_id',$service_id)
+				   	->groupBy('menus.id')
+				   	->orderBy('menuOrder','ASC')
+				   	->get();
+
+
+		$reservables_id = Input::get('reservables_id');
+		
+			 		   
+		$day=Carbon::parse(Input::get('fecha_reserva'))->dayOfWeek;
+
+		$re = Reservables::find($reservables_id);
+		
+		$time = $re->time;
+
+		$reser = ReservablesAvailable::where('item_id',$reservables_id)->where('weekday',$day)->first();
+		
+		if($reser){
+			$desde_1 = $reser->desde_1;
+			$hasta_1 = $reser->hasta_1;
+			$turno_1 = array();
+
+			$desde_2 = $reser->desde_2;
+			$hasta_2 = $reser->hasta_2;
+			$turno_2 = [];
+
+			if($desde_1=="00:00:00" && $hasta_1=="00:00:00"){
+				$primero = 0;
+			}else{
+				$fecha_inicio_1 = Carbon::parse($desde_1);
+
+				$fecha_final_1 = Carbon::parse($hasta_1);
+
+				//d($fecha_inicio_1,$fecha_final_1);
+				$num=199;
+				$k=0;
+				while($num > 12){
+					$ff = $fecha_inicio_1->addMinutes($time);
+
+					$turno_1[]=$ff->toTimeString();
+					
+					//echo $fecha_inicio_1->addMinutes($time)->dateString()."<br>";
+
+					if($ff->gt($fecha_final_1)){
+						break;
+					}
+					$time = $time + $time;
+					$k++;
+				}
+
+				//$fecha_test= $fecha_inicio_1->addMinutes($time);
+				//while()
+				//dd($fecha_test->gt($fecha_inicio_1),$fecha_inicio_1->gt($fecha_test));
+
+			}
+
+			if($desde_2=="00:00:00" && $hasta_2=="00:00:00"){
+				$segundo = 0;
+			}
+
+
+
+		}else{
+			return '1';
+		}
+
+		
+		$template = $hotel->theme; 
+		
+		return json_encode($turno_1);
+
+		 
 	}
 
 	public function getProductoItem($id)
@@ -712,6 +861,7 @@ class RoomerController extends \BaseController {
 					   		'category_menu.picture as category_picture')
  					->orderBy('category_menu.order','ASC')
 				   	->get();
+
 		$exchange = Exchanges::find($hotel->exchange_id)->symbol;
 		
 		$phones =  DB::table('phones')
@@ -750,6 +900,8 @@ class RoomerController extends \BaseController {
 			->withBusiness(Category::find($service_id)->business_id)
 			->withProductos($business);			
 	}
+
+
 
     public function getItemDetalle($id)
 	{

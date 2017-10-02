@@ -1,4 +1,4 @@
-<?php
+vw<?php
 class HotelReservasController extends \BaseController {
 	
 	public function index()
