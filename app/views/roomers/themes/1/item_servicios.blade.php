@@ -70,6 +70,11 @@
 				<span style="color:white;">{{$lang->txt_ver_productos}}</span>
 			</a>
             @endif
+            @if($res)
+			<a href="/roomer/reservar/{{$business->id}}" style="margin-bottom: 30px; font-size:12px; padding: 0; width: 114px;"  class="btn waves-effect waves-white">
+				<span style="color:white;">{{$lang->txt_reservar}} Reservar</span>
+			</a>
+            @endif
 			<a style="margin-bottom: 15px;"  class="col s12 m12 waves-effect waves-white textP">
 				<span>{{BusinessLang::where('business_id',$business->id)->where('language_id',Session::get('lang_id'))->first()->description}}</span>
 			</a>

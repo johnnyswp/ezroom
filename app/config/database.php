@@ -45,7 +45,6 @@ return array(
 	*/
 
 	'connections' => array(
-
 		'sqlite' => array(
 			'driver'   => 'sqlite',
 			'database' => __DIR__.'/../database/production.sqlite',
@@ -57,12 +56,11 @@ return array(
 			'host'      => 'localhost',
 		   	'database'  => 'ezroom',
 		   	'username'  => 'root',
-		   	'password'  => '',
+		   	'password'  => 'CLAROCLARO74',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
 		),
-
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',
