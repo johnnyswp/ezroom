@@ -76,6 +76,9 @@
 		<!--<div  class="col s12 m12">
 			<h5 style="padding: 0;margin: 0 0 20px;" class="center">!! {{$lang->txt_catalogo}}</h5>
 		</div>-->
+		@if (Session::has('message'))
+          <label class="color" style="font-size: 20px;color: white;background-color: rgba(0, 204, 23, 0.29);">{{ Session::get('message') }}</label>
+        @endif
 		@if($business=='0')
 			<div class="row">
 			<a style="margin: 10px 0;" href="#" class="col s12 m12 waves-effect waves-white">
@@ -83,7 +86,7 @@
 			</a>
 			</div>
 		@else
-		<form action="/roomer/reservar-go-days" method="get" accept-charset="utf-8">			
+		<form action="/roomer/reservar-save" method="post" accept-charset="utf-8">			
 			
 			<div class="row">
 				<div class="input-field col s12" style="margin-left: 0; padding-left: 0;">

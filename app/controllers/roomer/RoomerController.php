@@ -708,7 +708,7 @@ class RoomerController extends \BaseController {
 
 	public function getReservarGoDays()
 	{
-        
+         
 		$service_id = Input::get('business_id');
 		 
 		$stay = Stay::find(Session::get('token_stay'));
@@ -854,6 +854,37 @@ class RoomerController extends \BaseController {
 		$template = $hotel->theme; 
 		
 		return json_encode($turno_1_final);
+
+		 
+	}
+
+	public function postReservarSave()
+	{
+        
+		$service_id = Input::get('business_id');
+		 
+		$stay = Stay::find(Session::get('token_stay'));
+
+		#$lang_id = LanguageHotel::find(Session::get('lang_id'))->language_id;
+		$lang_id = Session::get('lang_id');
+		
+		$hotel = Hotel::find($stay->hotel_id);
+
+		$lang = Language::find($lang_id);
+		 
+		$reser = new ReservablesDetalle;
+        $reser->reservables_id = Input::get('reservables_id');
+        $reser->hotel_id = $hotel->id;
+        $reser->stay_id = $stay->id;
+        $reser->state = 1;
+        $reser->fecha = Carbon::parse(Input::get('fecha_reserva'))->toDateString();
+        $reser->hora = Input::get('hora');
+        $reser->save();
+ 
+		Session::flash('message', trans('main.reserva ok'));
+			#return Redirect::back();
+			return Redirect::back()->withInput();	 
+		 
 
 		 
 	}
