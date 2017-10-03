@@ -4,7 +4,8 @@ function log(id) {
     console.log(id);
 };
 var shopcar = {
-    url: "http://panel.ezroomservice.com",
+    //url: "http://panel.ezroomservice.com",
+    url: "http://aesyroom.dev",
     txt_mesaje_pedido: "",
     txt_select_horario: "",
     txt_item_no_horario: "",

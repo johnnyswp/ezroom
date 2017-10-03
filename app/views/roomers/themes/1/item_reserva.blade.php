@@ -84,10 +84,24 @@
 			</div>
 		@else
 		<form action="/roomer/reservar-go-days" method="get" accept-charset="utf-8">			
+			
 			<div class="row">
 				<div class="input-field col s12" style="margin-left: 0; padding-left: 0;">
-					<input id="fecha_reserva" name="fecha_reserva" type="text" class="validate" style="height: 53px; font-size: 45px; font-weight: 800;border-bottom: 1px solid #FFFFFF;">				 
-					<label for="username" style="left:0; color:white">Fecha</label>
+				    <select id="bussines_id" name="bussines_id">
+				      <option value="" disabled >Bussines</option>
+				      @foreach($businesss as $busi)
+			          	<?php 
+                             $busiLang = BusinessLang::where('business_id', $busi->id)->where('language_id', $lang->id)->first();
+                            $bussine_select =$business->id;
+
+				  	    ?>
+				  	    @if($busi->id==$bussine_select)
+				      	<option selected value="{{$busi->id}}">{{$busiLang->name}}</option>
+				      	@else
+				      	<option value="{{$busi->id}}">{{$busiLang->name}}</option>
+				      	@endif
+				      @endforeach
+				    </select>
 				</div>
 			</div>
 			<div class="row">
@@ -106,18 +120,19 @@
 				</div>
 			</div>
 			<div class="row">
+				<div class="input-field col s12" style="margin-left: 0; padding-left: 0;">
+					<input id="fecha_reserva" name="fecha_reserva" type="text" class="validate" style="height: 53px; font-size: 45px; font-weight: 800;border-bottom: 1px solid #FFFFFF;">				 
+					<label for="username" style="left:0; color:white">Fecha</label>
+				</div>
+			</div>
+			<div class="row">
 				<ul id="items_date" class="items_date">
-					<li><a>00:00</a></li>
-					<li><a>00:00</a></li>
-					<li><a>00:00</a></li>
-					<li><a>00:00</a></li>
-					<li><a>00:00</a></li>
-					<li><a>00:00</a></li>
-					<li><a>00:00</a></li>				 
+									 
 				</ul>
 			</div>
 			<div class="row">
 				<input id="business_id" name="business_id" value="{{ $business_id }}" type="hidden">
+				<input id="hora" name="hora" value="" type="hidden">
 				<button type="submit">Enviar</button>
 			</div>
 		</form>
@@ -128,6 +143,7 @@
 @stop
 
 @section('script')
+
 	<script>
 		$(function(){
 			

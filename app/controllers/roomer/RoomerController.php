@@ -653,6 +653,7 @@ class RoomerController extends \BaseController {
 
 		 
 		$business = Business::find($service_id);
+	 	
 	 	if($business->state!=1){
 	 		$business='0';
 	 	}
@@ -667,7 +668,9 @@ class RoomerController extends \BaseController {
 				   	->groupBy('menus.id')
 				   	->orderBy('menuOrder','ASC')
 				   	->get();
-
+        
+       
+		
 		$reservables = DB::table('business')
 				   	->Join('reservables', 'reservables.business_id', '=', 'business.id')
 				   	->where('reservables.hotel_id',$stay->hotel_id)
@@ -679,7 +682,9 @@ class RoomerController extends \BaseController {
 		 	
 		$template = $hotel->theme; 
 		
-		 $menus = Reservables::where('business_id', $service_id)->where('hotel_id', $stay->hotel_id)->orderBy('reservablesOrder', 'ASC')->get();
+		$businesss = Business::where('hotel_id', $stay->hotel_id)->orderBy('businessOrder', 'ASC')->get();	
+		 
+		$menus = Reservables::where('business_id', $service_id)->where('hotel_id', $stay->hotel_id)->orderBy('reservablesOrder', 'ASC')->get();
 
 
 
@@ -693,6 +698,7 @@ class RoomerController extends \BaseController {
 			->withStay($stay)
 			->withLang($lang)
 			->withBusiness($business)
+			->withBusinesss($businesss)
 			->withRes($reservables)	
 			->withMenus($menus)	
 			->withBusiness_id($service_id)	
@@ -702,10 +708,6 @@ class RoomerController extends \BaseController {
 
 	public function getReservarGoDays()
 	{
-
-		
-		
-		 
         
 		$service_id = Input::get('business_id');
 		 
@@ -728,6 +730,8 @@ class RoomerController extends \BaseController {
 					   		'category_menu.picture as category_picture')
  					->orderBy('category_menu.order','ASC')
 				   	->get();
+
+
 		$exchange = Exchanges::find($hotel->exchange_id)->symbol;
 		
 		$phones =  DB::table('phones')
@@ -798,27 +802,43 @@ class RoomerController extends \BaseController {
 				$fecha_final_1 = Carbon::parse($hasta_1);
 
 				//d($fecha_inicio_1,$fecha_final_1);
-				$num=199;
+				$num=1;
 				$k=0;
-				while($num > 12){
-					$ff = $fecha_inicio_1->addMinutes($time);
 
-					$turno_1[]=$ff->toTimeString();
+				while(20 > $k){
+
+					$turno_1[]=Carbon::parse($desde_1)->addMinutes($time)->toTimeString();
 					
 					//echo $fecha_inicio_1->addMinutes($time)->dateString()."<br>";
 
-					if($fecha_final_1->gt($fecha_final_1)){
-						break;
-					}
-					$time = $time + $time;
+					 
+					$time = $time + $re->time;
 					$k++;
+
+					if (Carbon::parse($desde_1)->addMinutes($time)->gt(Carbon::parse($hasta_1))) {
+						 break;
+					}
 				}
 
-				//$fecha_test= $fecha_inicio_1->addMinutes($time);
-				//while()
-				//dd($fecha_test->gt($fecha_inicio_1),$fecha_inicio_1->gt($fecha_test));
 
 			}
+			$fec=Carbon::parse(Input::get('fecha_reserva'))->toDateString();
+			 
+			$detalles = ReservablesDetalle::where('reservables_id',$reservables_id)
+								->where('hotel_id',$hotel->id)
+								->where('fecha',$fec)
+								->select('hora')
+								->get();
+			
+			$turno_1_detalle = array();
+			
+			foreach ($detalles as $de) {
+				$turno_1_detalle[]=$de->hora;
+			}
+
+			
+			$turno_1_final = array_diff($turno_1, $turno_1_detalle);
+
 
 			if($desde_2=="00:00:00" && $hasta_2=="00:00:00"){
 				$segundo = 0;
@@ -833,7 +853,7 @@ class RoomerController extends \BaseController {
 		
 		$template = $hotel->theme; 
 		
-		return json_encode($turno_1);
+		return json_encode($turno_1_final);
 
 		 
 	}

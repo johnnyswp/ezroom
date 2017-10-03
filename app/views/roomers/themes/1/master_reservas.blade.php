@@ -151,7 +151,39 @@
             },
             onSet: function(context) {
             	var picker = $input.pickadate('picker');
+            	
+            	$.get(shopcar.url+'/roomer/reservar-go-days', 
+                    	  {
+                    	  	bussines_id: $('#bussines_id').val(), 
+                    	  	reservables_id: $('#reservables_id').val(), 
+                    	  	fecha_reserva: picker.get('select', 'dd-mm-yyyy'), 
+                    	  	business_id: $('#bussines_id').val()                    	  
+                    	  }, 
+                    	  function(data, textStatus, xhr) {
+	                    	var rick = JSON.parse(data);
+
+							$.each(rick, function(i, item) {
+							   $('#items_date').append('<li><a>'+item+'</a></li>') 
+							});
+							var ul = $('#items_date');
+			
+							$('#items_date li').on('click', 'a', function(event) {
+								event.preventDefault();
+								/* Act on the event */
+
+								 	$( "#items_date li" ).each(function( index ) {
+									   $(this).find('a').removeClass('select_li')
+									});
+
+								$(this).addClass('select_li');
+								$('#hora').val($(this).text());
+							});
+                    		 
+						});
+
             	picker.close();
+
+			
                 /*
             	var hoy = picker.get('select', 'mm/dd/yyyy');
             	var today = moment().format('L');
