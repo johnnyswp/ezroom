@@ -807,7 +807,7 @@ class RoomerController extends \BaseController {
 					
 					//echo $fecha_inicio_1->addMinutes($time)->dateString()."<br>";
 
-					if($ff->gt($fecha_final_1)){
+					if($fecha_final_1->gt($fecha_final_1)){
 						break;
 					}
 					$time = $time + $time;
