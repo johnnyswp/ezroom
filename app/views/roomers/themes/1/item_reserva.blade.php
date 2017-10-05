@@ -96,7 +96,6 @@
 			          	<?php 
                              $busiLang = BusinessLang::where('business_id', $busi->id)->where('language_id', $lang->id)->first();
                             $bussine_select =$business->id;
-
 				  	    ?>
 				  	    @if($busi->id==$bussine_select)
 				      	<option selected value="{{$busi->id}}">{{$busiLang->name}}</option>
@@ -149,22 +148,61 @@
 
 	<script>
 		$(function(){
-			
 			var ul = $('#items_date');
-			
 			$('#items_date li').on('click', 'a', function(event) {
 				event.preventDefault();
 				/* Act on the event */
-
 				 	$( "#items_date li" ).each(function( index ) {
 					   $(this).find('a').removeClass('select_li')
 					});
-
 				$(this).addClass('select_li');
-
 			});
-			
+				$('#reservables_id').on('change',function(){
 
+					if($('#fecha_reserva').val()!=''){
+						$.get(shopcar.url+'/roomer/reservar-go-days', 
+		              	{
+		              	  	bussines_id: $('#bussines_id').val(), 
+		              	  	reservables_id: $('#reservables_id').val(), 
+		              	  	fecha_reserva: $('#fecha_reserva').val(), 
+		              	  	business_id: $('#bussines_id').val()                    	  
+		              	}, 
+			            function(data, textStatus, xhr) {
+				           	var rick = JSON.parse(data);
+				           	$('#items_date').html('');
+							$.each(rick, function(i, item) {
+							   $('#items_date').append('<li><a>'+item+'</a></li>') 
+							});
+							var ul = $('#items_date');
+							$('#items_date li').on('click', 'a', function(event) {
+								event.preventDefault();
+								/* Act on the event */
+								 	$( "#items_date li" ).each(function( index ) {
+									   $(this).find('a').removeClass('select_li')
+									});
+								$(this).addClass('select_li');
+								$('#hora').val($(this).text());
+							});	                  		
+						});
+					}else{
+						console.log('Llene Fecha Reservable');
+					}
+				});
+
+				$('#bussines_id').on('change',function(){
+					$.get(shopcar.url+'/roomer/negocios/'+$(this).val(), 		            
+			        function(data, textStatus, xhr) {
+			        	
+			        	$('#reservables_id').material_select('destroy');
+				       	
+				       	
+				       	$('#reservables_id').html(data);
+			        	
+			        	$('#reservables_id').material_select();
+
+					});
+				});
+				
 		});
 	</script>
 @stop

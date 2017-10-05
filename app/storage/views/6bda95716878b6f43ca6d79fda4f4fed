@@ -70,6 +70,11 @@
 				<span style="color:white;"><?php echo $lang->txt_ver_productos; ?></span>
 			</a>
             <?php endif; ?>
+            <?php if($res): ?>
+			<a href="/roomer/reservar/<?php echo $business->id; ?>" style="margin-bottom: 30px; font-size:12px; padding: 0; width: 114px;"  class="btn waves-effect waves-white">
+				<span style="color:white;"><?php echo $lang->txt_reservar; ?> Reservar</span>
+			</a>
+            <?php endif; ?>
 			<a style="margin-bottom: 15px;"  class="col s12 m12 waves-effect waves-white textP">
 				<span><?php echo BusinessLang::where('business_id',$business->id)->where('language_id',Session::get('lang_id'))->first()->description; ?></span>
 			</a>

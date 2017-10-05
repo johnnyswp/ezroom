@@ -448,6 +448,9 @@ return array(
     'infoemail site' => 'email publico',
     'tipo de login' => 'Metodo de acceso',
     'con token' => 'Por email + contraseña',
-	'con username' => 'Con usuario y contraseña',
+	'status 1' => 'Pendiente',
+    'status 2' => 'Confirmado',
+    'status 4' => 'Cancelado',
+    'status 3' => 'Realizado',
 
 );

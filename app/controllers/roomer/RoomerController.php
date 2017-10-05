@@ -637,10 +637,7 @@ class RoomerController extends \BaseController {
 					   		'phones.number as phones_number')
  					->orderBy('phones.order','ASC')
 				   	->get();
-		
-		
-
-
+			
 		$today = Carbon::today();
 		$stay_token = Carbon::parse($stay->closing_date);		 
 	 
@@ -705,6 +702,21 @@ class RoomerController extends \BaseController {
 			->withPro($productos);			
 	}
 
+	public function getNegocios($service_id){
+
+		$stay = Stay::find(Session::get('token_stay'));
+
+		$menus = Reservables::where('business_id', $service_id)->where('hotel_id', $stay->hotel_id)->orderBy('reservablesOrder', 'ASC')->get();
+		$lang_id = Session::get('lang_id');
+	
+
+        foreach($menus as $menu){
+            $menuLang = ReservablesLang::where('reservables_id', $menu->id)->where('language_id', $lang_id)->first();                           
+            echo "<option value='".$menu->id."'>".$menuLang->name."</option>";
+		}
+
+
+	}
 
 	public function getReservarGoDays()
 	{
@@ -853,9 +865,7 @@ class RoomerController extends \BaseController {
 		
 		$template = $hotel->theme; 
 		
-		return json_encode($turno_1_final);
-
-		 
+		return json_encode($turno_1_final);	 
 	}
 
 	public function postReservarSave()
@@ -883,10 +893,7 @@ class RoomerController extends \BaseController {
  
 		Session::flash('message', trans('main.reserva ok'));
 			#return Redirect::back();
-			return Redirect::back()->withInput();	 
-		 
-
-		 
+			return Redirect::back()->withInput();	 	
 	}
 
 	public function getProductoItem($id)

@@ -460,4 +460,38 @@ class ReceptionistController extends \BaseController {
              SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $filter )
          );
     }
+
+    public function getReservation()
+    {
+        if(Payment::DisabledPayment()==false)
+           return View::make('hotel.Payment.renews-payment');
+       
+        $user = Sentry::getUser();
+        $hotel = Hotel::find($user->hotel_id);
+        $lang = LanguageHotel::where('main', 1)->where('hotel_id', $hotel->id)->first();
+
+        $reservas = DB::table('reservablesdetalles')->join('stays', 'stays.id', '=', 'reservablesdetalles.stay_id')
+                                                    ->where('reservablesdetalles.hotel_id',$hotel->id)
+                                                    ->select('reservablesdetalles.id as id','stays.id as stay_id', 'stays.name as stay', 'reservablesdetalles.reservables_id as reservables_id', 'reservablesdetalles.hotel_id as hotel_id','reservablesdetalles.hora as hora','reservablesdetalles.fecha as fecha','reservablesdetalles.state as state')->orderBy('reservablesdetalles.id', 'DESC')->groupBy('reservablesdetalles.id')->paginate(5);
+
+        return View::make('receptionists.pages.reservation')
+            ->withHotel($hotel)
+            ->withReservas($reservas)
+            ->withUser($user)
+            ->withLang($lang);
+    }
+
+    public function getReservationState($id,$state)
+    {
+        if(Payment::DisabledPayment()==false)
+           return View::make('hotel.Payment.renews-payment');
+       
+        $user = Sentry::getUser();
+        $hotel = Hotel::find($user->hotel_id);
+        $reserva = ReservablesDetalle::find($id);
+        $reserva->state = $state;
+        $reserva->save();
+
+        return Redirect::to('receptionist/reservation');
+    }
 }

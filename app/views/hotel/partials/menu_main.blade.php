@@ -9,6 +9,7 @@
 	@if(Helpers::typeU()==1 or Helpers::typeU()==3 or Helpers::typeU()==0)
 	    <li><span><i class="icon fa fa-bars"></i>{{trans('main.recepcion')}}</span>
 	    	<ul>
+	    		<li><a href="{{url('receptionist/reservation')}}"><span> {{trans('main.reservaciones')}}</span></a></li>
 	    		<li><a href="{{url('receptionist/stays')}}"><span> {{trans('main.estadias')}}</span></a></li>
 	    		<li><a href="{{url('receptionist/all-stays')}}"><span> {{trans('main.busqueda de estadias')}}</span></a></li>
 	    		<li><a href="{{url('receptionist/all-order')}}"><span> {{trans('main.busqueda de peidos')}}</span></a></li>

@@ -53,14 +53,15 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => 'localhost',
-		   	'database'  => 'ezroom',
-		   	'username'  => 'root',
-		   	'password'  => '',
+			'host'      => '149.62.170.176',
+		   	'database'  => 'ezroom2',
+		   	'username'  => 'ezr2',
+		   	'password'  => '3Dd4#in4',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
 		),
+
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',

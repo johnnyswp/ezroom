@@ -4,8 +4,8 @@ function log(id) {
     console.log(id);
 };
 var shopcar = {
-    //url: "http://panel.ezroomservice.com",
-    url: "http://aesyroom.dev",
+    url: "http://panel.ezroomservice.com",
+    //url: "http://aesyroom.dev",
     txt_mesaje_pedido: "",
     txt_select_horario: "",
     txt_item_no_horario: "",
@@ -219,26 +219,62 @@ var shopcar = {
         var item = store.get('elem_' + id);
         if (item === undefined) {
             //store.remove('item_list')
-            store.set('elem_' + id, { id: id, price: price, count: count, exchange: exchange, time: time, name: name, description: description, picture: picture });
+            store.set('elem_' + id, {
+                id: id,
+                price: price,
+                count: count,
+                exchange: exchange,
+                time: time,
+                name: name,
+                description: description,
+                picture: picture
+            });
             $.post(shopcar.url + '/roomer/item-name/' + id, {}, function(data, textStatus, xhr) {
                 store.set('name_' + id, data);
             });
         } else {
             var c = item.count;
             var count_total = parseInt(c) + 1;
-            store.set('elem_' + id, { id: id, price: price, count: count_total, exchange: exchange, time: time, name: name, description: description, picture: picture });
+            store.set('elem_' + id, {
+                id: id,
+                price: price,
+                count: count_total,
+                exchange: exchange,
+                time: time,
+                name: name,
+                description: description,
+                picture: picture
+            });
         }
     },
     setItemLess: function(id, price, count, name, description, picture, exchange, time) {
         var item = store.get('elem_' + id);
         if (item === undefined) {
             //store.remove('item_list')
-            store.set('elem_' + id, { id: id, price: price, count: count, exchange: exchange, time: time, name: name, description: description, picture: picture });
+            store.set('elem_' + id, {
+                id: id,
+                price: price,
+                count: count,
+                exchange: exchange,
+                time: time,
+                name: name,
+                description: description,
+                picture: picture
+            });
         } else {
             var c = item.count;
             var count_total = parseInt(c) - 1;
 
-            store.set('elem_' + id, { id: id, price: price, count: count_total, exchange: exchange, time: time, name: name, description: description, picture: picture });
+            store.set('elem_' + id, {
+                id: id,
+                price: price,
+                count: count_total,
+                exchange: exchange,
+                time: time,
+                name: name,
+                description: description,
+                picture: picture
+            });
         }
     },
     setAddNum: function() {
